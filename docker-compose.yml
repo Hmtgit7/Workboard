@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: workboard_user
+      POSTGRES_PASSWORD: development_password
+      POSTGRES_DB: workboard_dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U workboard_user -d workboard_dev']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://workboard_user:development_password@db:5432/workboard_dev
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: pnpm dev
+
+  prisma-studio:
+    image: node:20-alpine
+    working_dir: /app
+    environment:
+      DATABASE_URL: postgresql://workboard_user:development_password@db:5432/workboard_dev
+    ports:
+      - '5555:5555'
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: npx prisma studio
+    entrypoint: sh -c
+
+volumes:
+  postgres_data:

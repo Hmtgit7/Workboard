@@ -1,0 +1,35 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '04:00'
+      timezone: 'UTC'
+    open-pull-requests-limit: 10
+    groups:
+      workspace-dependencies:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+    versioning-strategy: increase-if-necessary
+
+  - package-ecosystem: npm
+    directory: '/app'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '04:30'
+      timezone: 'UTC'
+    open-pull-requests-limit: 10
+    groups:
+      app-dependencies:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: 'chore(app-deps)'
+      prefix-development: 'chore(app-deps-dev)'
+    versioning-strategy: increase-if-necessary
