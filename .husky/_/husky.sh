@@ -1,14 +1,9 @@
-#!/bin/sh
-# husky install helper - do not modify
+echo "husky - DEPRECATED
 
-_husky_main() {
-  local hook=$1
-  local args=$2
+Please remove the following two lines from $0:
 
-  if [ -f "$hook" ]; then
-    chmod +x "$hook"
-    sh "$hook" "$args"
-  fi
-}
+#!/usr/bin/env sh
+. \"\$(dirname -- \"\$0\")/_/husky.sh\"
 
-_husky_main "$@"
+They WILL FAIL in v10.0.0
+"
